@@ -36,12 +36,16 @@ home <- \() {
 
   modal_ids <- c(
     "example_modal", "static_backdrop_modal", "outer_scrollable_modal",
-    "inner_scrollable_modal", "vertically_centered_modal"
+    "inner_scrollable_modal", "vertically_centered_modal",
+    "extra_large_modal", "large_modal", "small_modal"
   )
-  btn_labels <- c(
-    "Launch demo modal", "Launch static backdrop modal",
-    "Launch outer-scrollable modal", "Launch inner-scrollable modal",
-    "Launch vertically centered modal"
+  btn_labels <- paste(
+    "Launch",
+    c(
+      "demo modal", "static backdrop modal", "outer-scrollable modal",
+      "inner-scrollable modal", "vertically centered modal",
+      "extra large modal", "large modal", "small modal"
+    )
   )
 
   trigger_btns <- create_card(
@@ -170,6 +174,60 @@ home <- \() {
     )
   )
 
+  extra_large_modal <- create_modal(
+    id = "extra_large_modal",
+    title = "Extra Large Modal",
+    size = "xl",
+    body = tags$p("Geez, this is an extra large modal!"),
+    footer = tags$div(
+      create_button(
+        class = "btn btn-secondary",
+        `data-bs-dismiss` = "modal",
+        "Close"
+      ),
+      create_button(
+        class = "btn btn-primary",
+        "Save Changes"
+      )
+    )
+  )
+
+  large_modal <- create_modal(
+    id = "large_modal",
+    title = "Large Modal",
+    size = "lg",
+    body = tags$p("This is a large modal."),
+    footer = tags$div(
+      create_button(
+        class = "btn btn-secondary",
+        `data-bs-dismiss` = "modal",
+        "Close"
+      ),
+      create_button(
+        class = "btn btn-primary",
+        "Save Changes"
+      )
+    )
+  )
+
+  small_modal <- create_modal(
+    id = "small_modal",
+    title = "Small Modal",
+    size = "sm",
+    body = tags$p("I am smol modoo."),
+    footer = tags$div(
+      create_button(
+        class = "btn btn-secondary",
+        `data-bs-dismiss` = "modal",
+        "Close"
+      ),
+      create_button(
+        class = "btn btn-primary",
+        "Save Changes"
+      )
+    )
+  )
+
   tagList(
     create_nav(),
     tags$div(
@@ -181,6 +239,9 @@ home <- \() {
     static_backdrop_modal,
     inner_scrollable_modal,
     outer_scrollable_modal,
-    vertically_centered_modal
+    vertically_centered_modal,
+    extra_large_modal,
+    large_modal,
+    small_modal
   )
 }
