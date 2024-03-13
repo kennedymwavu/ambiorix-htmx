@@ -2,23 +2,10 @@ box::use(
   htmltools[tags, tagList],
   . / create_nav[create_nav],
   . / create_card[create_card],
+  . / create_modal[create_modal],
   . / create_button[create_button],
-  . / create_modal[create_modal]
+  . / create_modal_trigger_btn[create_modal_trigger_btn]
 )
-
-#' Create modal trigger btn
-#'
-#' @param modal_id Modal id.
-#' @param btn_label Button label.
-#' @export
-create_modal_trigger_btn <- \(modal_id, btn_label) {
-  create_button(
-    class = "btn btn-primary mb-2",
-    `data-bs-toggle` = "modal",
-    `data-bs-target` = paste0("#", modal_id),
-    btn_label
-  )
-}
 
 #' The home page
 #'
