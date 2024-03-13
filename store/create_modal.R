@@ -14,10 +14,12 @@ box::use(
 #' @param footer The modal's footer content.
 #' @param easy_close Logical. Can the modal be dismissed by clicking outside of
 #' it? Defaults to `TRUE`.
-#' @param scrollable Logical. Should inner scrolling be enabled when content 
+#' @param scrollable Logical. Should inner scrolling be enabled when content
 #' exceeds the predefined max-height of the modal? Defaults to `FALSE.`
 #' @param vertically_centered Logical. Should the modal be vertically centered?
 #' Defaults to `FALSE`.
+#' @param size String. Modal size. Valid options are `NULL` (default), "xl",
+#' "lg" and "sm".
 #' @return An object of class `shiny.tag`.
 #' @export
 create_modal <- \(
@@ -28,11 +30,13 @@ create_modal <- \(
   footer = NULL,
   easy_close = TRUE,
   scrollable = FALSE,
-  vertically_centered = FALSE
+  vertically_centered = FALSE,
+  size = NULL
 ) {
   aria_labelled_by <- paste(id, UUIDgenerate(), sep = "-")
   data_bs_backdrop <- if (!easy_close) "static"
   data_bs_keyboard <- if (!easy_close) "false"
+  size <- if (!is.null(size)) paste0("modal-", size)
 
   title <- if (!is.null(title)) {
     tags$h1(
@@ -78,7 +82,8 @@ create_modal <- \(
       class = paste(
         "modal-dialog",
         if (scrollable) "modal-dialog-scrollable",
-        if (vertically_centered) "modal-dialog-centered"
+        if (vertically_centered) "modal-dialog-centered",
+        size
       ),
       tags$div(
         class = "modal-content",
