@@ -10,7 +10,7 @@ home_get <- \(req, res) {
   res$render(
     template_path("page.html"),
     list(
-      title = "Home",
+      title = "Modal Types",
       content = home()
     )
   )
