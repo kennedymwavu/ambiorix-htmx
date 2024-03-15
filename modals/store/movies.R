@@ -21,7 +21,7 @@ movies <- \() {
       create_card(
         class = "shadow-sm mb-3",
         title = "My Movie Collection",
-        title_icon = tags$i(class = "bi bi-caret-right-square"),
+        title_icon = tags$i(class = "bi bi-camera-reels"),
         title_class = "text-primary",
         tags$p(
           "A sample project that shows how to support modal",
@@ -29,7 +29,8 @@ movies <- \() {
         ),
         create_table(
           data = movie_collection,
-          add_row_numbers = TRUE
+          add_row_numbers = TRUE,
+          wrap = FALSE
         )
       )
     )
