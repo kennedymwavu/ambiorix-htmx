@@ -10,11 +10,13 @@ box::use(
 #' @param id Table id.
 #' @param add_row_numbers Logical. Whether to add row numbers. Defaults
 #' to `FALSE`.
+#' @param wrap Logical. Should long text be wrapped? Defaults to `TRUE`.
 #' @export
 create_table <- \(
   data,
   id = NULL,
-  add_row_numbers = FALSE
+  add_row_numbers = FALSE,
+  wrap = TRUE
 ) {
   tbl <- as.data.table(data)
 
@@ -55,6 +57,7 @@ create_table <- \(
   ]
 
   tbody <- tags$tbody(
+    style = if (!wrap) "white-space: nowrap;",
     lapply(
       X = seq_len(n),
       FUN = \(row_index) {
