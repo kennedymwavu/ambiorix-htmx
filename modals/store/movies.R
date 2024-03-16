@@ -31,6 +31,11 @@ movies <- \() {
           data = movie_collection,
           add_row_numbers = TRUE,
           wrap = FALSE
+        ),
+        create_button(
+          class = "btn btn-outline-primary rounded-1",
+          tags$i(class = "bi bi-plus-lg"),
+          "Add a movie"
         )
       )
     )
