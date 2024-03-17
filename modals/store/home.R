@@ -37,7 +37,13 @@ home <- \() {
 
   trigger_btns <- create_card(
     class = "shadow-sm mb-3",
-    Map(f = create_modal_trigger_btn, modal_ids, btn_labels)
+    Map(
+      f = \(modal_id, btn_label) {
+        create_modal_trigger_btn(modal_id = modal_id, btn_label)
+      },
+      modal_ids,
+      btn_labels
+    )
   )
 
   example_modal <- create_modal(
