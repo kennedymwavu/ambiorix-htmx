@@ -6,10 +6,11 @@ box::use(
 #'
 #' @param ... Passed to `tags$button()`.
 #' @param class Classes to apply to the button.
+#' @param type Type of the button. Either "button" (default) or "submit".
 #' @export
-create_button <- \(..., class = NULL) {
+create_button <- \(..., class = NULL, type = "button") {
   tags$button(
-    type = "button",
+    type = type,
     class = paste("rounded-1", class),
     ...
   )
