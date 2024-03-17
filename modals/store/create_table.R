@@ -1,5 +1,6 @@
 box::use(
   htmltools[tags],
+  uuid[UUIDgenerate],
   data.table[as.data.table, setcolorder]
 )
 
@@ -14,7 +15,7 @@ box::use(
 #' @export
 create_table <- \(
   data,
-  id = NULL,
+  id,
   add_row_numbers = FALSE,
   wrap = TRUE
 ) {
@@ -61,7 +62,10 @@ create_table <- \(
     lapply(
       X = seq_len(n),
       FUN = \(row_index) {
-        tags$tr(tbl[row_index, ])
+        tags$tr(
+          id = paste(id, "row", UUIDgenerate(), sep = "-"),
+          tbl[row_index, ]
+        )
       }
     )
   )
