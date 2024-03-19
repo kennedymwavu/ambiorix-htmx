@@ -21,18 +21,23 @@ home <- \() {
     tags$p("Toggle them below:")
   )
 
-  modal_ids <- c(
-    "example_modal", "static_backdrop_modal", "outer_scrollable_modal",
-    "inner_scrollable_modal", "vertically_centered_modal",
-    "extra_large_modal", "large_modal", "small_modal"
+  modal_ids <- paste0(
+    c(
+      "example", "static_backdrop", "outer_scrollable",
+      "inner_scrollable", "vertically_centered",
+      "extra_large", "large", "small", "fullscreen"
+    ),
+    "_modal"
   )
+
   btn_labels <- paste(
     "Launch",
     c(
-      "demo modal", "static backdrop modal", "outer-scrollable modal",
-      "inner-scrollable modal", "vertically centered modal",
-      "extra large modal", "large modal", "small modal"
-    )
+      "demo", "static backdrop", "outer-scrollable",
+      "inner-scrollable", "vertically centered",
+      "extra large", "large", "small", "fullscreen"
+    ),
+    "modal"
   )
 
   trigger_btns <- create_card(
@@ -46,21 +51,23 @@ home <- \() {
     )
   )
 
+  footer <- tags$div(
+    create_button(
+      class = "btn btn-secondary",
+      `data-bs-dismiss` = "modal",
+      "Close"
+    ),
+    create_button(
+      class = "btn btn-primary",
+      "Save Changes"
+    )
+  )
+
   example_modal <- create_modal(
     id = "example_modal",
     title = "Modal Title",
     body = tags$p("Woohoo, you're reading this text in a modal!"),
-    footer = tags$div(
-      create_button(
-        class = "btn btn-secondary",
-        `data-bs-dismiss` = "modal",
-        "Close"
-      ),
-      create_button(
-        class = "btn btn-primary",
-        "Save Changes"
-      )
-    )
+    footer = footer
   )
 
   static_backdrop_modal <- create_modal(
@@ -71,17 +78,7 @@ home <- \() {
       tags$p("I will not close if you click outside of me."),
       tags$p("Don't even try to press escape key!")
     ),
-    footer = tags$div(
-      create_button(
-        class = "btn btn-secondary",
-        `data-bs-dismiss` = "modal",
-        "Close"
-      ),
-      create_button(
-        class = "btn btn-primary",
-        "Understood"
-      )
-    )
+    footer = footer
   )
 
   inner_scrollable_modal <- create_modal(
@@ -104,17 +101,7 @@ home <- \() {
         "This content should appear at the bottom after you scroll."
       )
     ),
-    footer = tags$div(
-      create_button(
-        class = "btn btn-secondary",
-        `data-bs-dismiss` = "modal",
-        "Close"
-      ),
-      create_button(
-        class = "btn btn-primary",
-        "Save changes"
-      )
-    )
+    footer = footer
   )
 
   outer_scrollable_modal <- create_modal(
@@ -136,17 +123,7 @@ home <- \() {
         "This content should appear at the bottom after you scroll."
       )
     ),
-    footer = tags$div(
-      create_button(
-        class = "btn btn-secondary",
-        `data-bs-dismiss` = "modal",
-        "Close"
-      ),
-      create_button(
-        class = "btn btn-primary",
-        "Save changes"
-      )
-    )
+    footer = footer
   )
 
   vertically_centered_modal <- create_modal(
@@ -154,17 +131,7 @@ home <- \() {
     vertically_centered = TRUE,
     title = "Vertically Centered Modal",
     body = tags$p("This is a vertically centered modal."),
-    footer = tags$div(
-      create_button(
-        class = "btn btn-secondary",
-        `data-bs-dismiss` = "modal",
-        "Close"
-      ),
-      create_button(
-        class = "btn btn-primary",
-        "Save Changes"
-      )
-    )
+    footer = footer
   )
 
   extra_large_modal <- create_modal(
@@ -172,17 +139,7 @@ home <- \() {
     title = "Extra Large Modal",
     size = "xl",
     body = tags$p("Geez, this is an extra large modal!"),
-    footer = tags$div(
-      create_button(
-        class = "btn btn-secondary",
-        `data-bs-dismiss` = "modal",
-        "Close"
-      ),
-      create_button(
-        class = "btn btn-primary",
-        "Save Changes"
-      )
-    )
+    footer = footer
   )
 
   large_modal <- create_modal(
@@ -190,17 +147,7 @@ home <- \() {
     title = "Large Modal",
     size = "lg",
     body = tags$p("This is a large modal."),
-    footer = tags$div(
-      create_button(
-        class = "btn btn-secondary",
-        `data-bs-dismiss` = "modal",
-        "Close"
-      ),
-      create_button(
-        class = "btn btn-primary",
-        "Save Changes"
-      )
-    )
+    footer = footer
   )
 
   small_modal <- create_modal(
@@ -208,17 +155,15 @@ home <- \() {
     title = "Small Modal",
     size = "sm",
     body = tags$p("I am smol modoo."),
-    footer = tags$div(
-      create_button(
-        class = "btn btn-secondary",
-        `data-bs-dismiss` = "modal",
-        "Close"
-      ),
-      create_button(
-        class = "btn btn-primary",
-        "Save Changes"
-      )
-    )
+    footer = footer
+  )
+
+  fullscreen_modal <- create_modal(
+    id = "fullscreen_modal",
+    fullscreen = TRUE,
+    title = "Fullscreen Modal",
+    body = tags$p("Whoa! Check this out..."),
+    footer = footer
   )
 
   tagList(
@@ -235,6 +180,7 @@ home <- \() {
     vertically_centered_modal,
     extra_large_modal,
     large_modal,
-    small_modal
+    small_modal,
+    fullscreen_modal
   )
 }
