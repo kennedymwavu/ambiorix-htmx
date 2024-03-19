@@ -18,6 +18,8 @@ box::use(
 #' exceeds the predefined max-height of the modal? Defaults to `FALSE.`
 #' @param vertically_centered Logical. Should the modal be vertically centered?
 #' Defaults to `FALSE`.
+#' @param fullscreen Logical. Should the modal be fullscreen ie. cover the user
+#' viewport? Defaults to `FALSE`.
 #' @param size String. Modal size. Valid options are `NULL` (default), "xl",
 #' "lg" and "sm".
 #' @return An object of class `shiny.tag`.
@@ -31,6 +33,7 @@ create_modal <- \(
   easy_close = TRUE,
   scrollable = FALSE,
   vertically_centered = FALSE,
+  fullscreen = FALSE,
   size = NULL
 ) {
   aria_labelled_by <- paste(id, UUIDgenerate(), sep = "-")
@@ -83,6 +86,7 @@ create_modal <- \(
         "modal-dialog",
         if (scrollable) "modal-dialog-scrollable",
         if (vertically_centered) "modal-dialog-centered",
+        if (fullscreen) "modal-fullscreen",
         size
       ),
       tags$div(
