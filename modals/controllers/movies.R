@@ -107,5 +107,34 @@ validate_year <- \(req, res) {
 #'
 #' @export
 validate_rating <- \(req, res) {
-  res
+  body <- parse_multipart(req)
+  rating <- as.integer(body$rating %||% 0)
+
+  valid_ratings <- 1:5
+  is_valid <- rating %in% valid_ratings
+
+  msg <- "Looks good!"
+  input_class <- "is-valid"
+  feedback_class <- "valid-feedback"
+
+  if (!is_valid) {
+    msg <- "Invalid rating!"
+    input_class <- "is-invalid"
+    feedback_class <- "invalid-feedback"
+  }
+
+  html <- select_input(
+    id = "rating",
+    label = "Rating",
+    choices = 5:1,
+    selected = rating,
+    hx_post = "/movies/validate/rating",
+    input_class = input_class,
+    tags$div(
+      class = feedback_class,
+      msg
+    )
+  )
+
+  res$send(html)
 }
