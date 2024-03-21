@@ -2,14 +2,17 @@ box::use(
   htmltools[tags],
   lubridate[year, now],
   stringr[str_to_title],
+  data.table[rbindlist],
   ambiorix[parse_multipart],
   .. / store / movies[movies],
   .. / store / text_input[text_input],
   .. / store / select_input[select_input],
+  .. / store / create_movie_table[create_movie_table],
   .. / store / movie_collection[movie_collection],
   .. / helpers / operators[`%||%`],
   .. / templates / template_path[template_path]
 )
+
 #' Handle GET at '/movies'
 #'
 #' @export
@@ -23,12 +26,43 @@ home_get <- \(req, res) {
   )
 }
 
+#' Handle POST at '/movies/add_movie'
+#'
+#' @export
+add_movie <- \(req, res) {
+  body <- parse_multipart(req)
+  movie_name <- check_movie_name(body$movie_name)
+  release_year <- check_release_year(body$release_year)
+  rating <- check_rating(body$rating)
+
+  all_valid <- movie_name$is_valid && release_year$is_valid && rating$is_valid
+
+  if (!all_valid) {
+    return(
+      res$send(tags$h3("Something is not right!"))
+    )
+  }
+
+  movie <- list(
+    Title = movie_name$sanitized_value,
+    Year = release_year$sanitized_value,
+    Rating = rating$sanitized_value
+  )
+
+  movie_collection <- rbindlist(l = list(movie_collection, movie))
+  html <- create_movie_table(movie_collection)
+
+  return(
+    res$send(html)
+  )
+}
+
 #' Handle POST at '/movies/validate/name'
 #'
 #' @export
 validate_name <- \(req, res) {
   body <- parse_multipart(req)
-  movie_name <- body$movie_name %||% ""
+  movie_name <- body$movie_name
 
   validity <- check_movie_name(movie_name)
 
@@ -40,7 +74,7 @@ validate_name <- \(req, res) {
 #' @export
 validate_year <- \(req, res) {
   body <- parse_multipart(req)
-  year <- as.integer(body$release_year %||% 0)
+  year <- body$release_year
 
   validity <- check_release_year(year)
 
@@ -52,7 +86,7 @@ validate_year <- \(req, res) {
 #' @export
 validate_rating <- \(req, res) {
   body <- parse_multipart(req)
-  rating <- as.integer(body$rating %||% 0)
+  rating <- body$rating
 
   validity <- check_rating(rating)
 
@@ -64,6 +98,8 @@ validate_rating <- \(req, res) {
 #' @param rating Integer. The rating.
 #' @param valid_ratings An integer vector. Valid ratings.
 #' @return Named list with the following elements:
+#' - `value`: The given rating.
+#' - `sanitized_value`: The sanitized rating.
 #' - `is_valid`: Whether the rating is valid.
 #' - `msg`: Message.
 #' - `input_class`: Input class.
@@ -71,7 +107,8 @@ validate_rating <- \(req, res) {
 #' - `html`: Validated HTML fragment.
 #' @export
 check_rating <- \(rating, valid_ratings = 1:5) {
-  is_valid <- rating %in% valid_ratings
+  sanitized_rating <- as.integer(rating %||% 0)
+  is_valid <- sanitized_rating %in% valid_ratings
 
   msg <- "Looks good!"
   input_class <- "is-valid"
@@ -87,7 +124,7 @@ check_rating <- \(rating, valid_ratings = 1:5) {
     id = "rating",
     label = "Rating",
     choices = 5:1,
-    selected = rating,
+    selected = sanitized_rating,
     hx_post = "/movies/validate/rating",
     input_class = input_class,
     tags$div(
@@ -97,6 +134,8 @@ check_rating <- \(rating, valid_ratings = 1:5) {
   )
 
   list(
+    value = rating,
+    sanitized_value = sanitized_rating,
     is_valid = is_valid,
     msg = msg,
     input_class = input_class,
@@ -110,6 +149,8 @@ check_rating <- \(rating, valid_ratings = 1:5) {
 #' @param year Integer. The release year.
 #' @param valid_years An integer vector. Valid years.
 #' @return Named list with the following elements:
+#' - `value`: The given release year.
+#' - `sanitized_value`: The sanitized release year.
 #' - `is_valid`: Whether the given year is valid.
 #' - `msg`: Message.
 #' - `input_class`: Input class.
@@ -117,7 +158,8 @@ check_rating <- \(rating, valid_ratings = 1:5) {
 #' - `html`: Validated HTML fragment.
 #' @export
 check_release_year <- \(year, valid_years = 1888:year(now())) {
-  is_valid <- year %in% valid_years
+  sanitized_year <- as.integer(year %||% 0)
+  is_valid <- sanitized_year %in% valid_years
 
   msg <- "Looks good!"
   input_class <- "is-valid"
@@ -133,7 +175,7 @@ check_release_year <- \(year, valid_years = 1888:year(now())) {
     id = "release_year",
     label = "Year",
     choices = 1888:year(now()),
-    selected = year,
+    selected = sanitized_year,
     hx_post = "/movies/validate/year",
     input_class = input_class,
     tags$div(
@@ -143,6 +185,8 @@ check_release_year <- \(year, valid_years = 1888:year(now())) {
   )
 
   list(
+    value = year,
+    sanitized_value = sanitized_year,
     is_valid = is_valid,
     msg = msg,
     input_class = input_class,
@@ -155,6 +199,8 @@ check_release_year <- \(year, valid_years = 1888:year(now())) {
 #'
 #' @param name String. The movie name.
 #' @return Named list with the following elements:
+#' - `value`: The given movie name.
+#' - `sanitized_value`: Sanitized movie name.
 #' - `is_valid`: Whether the given movie name is valid.
 #' - `msg`: Message.
 #' - `input_class`: Input class.
@@ -162,7 +208,7 @@ check_release_year <- \(year, valid_years = 1888:year(now())) {
 #' - `html`: Validated HTML fragment.
 #' @export
 check_movie_name <- \(name) {
-  movie_name <- name |>
+  movie_name <- (name %||% "") |>
     trimws() |>
     str_to_title()
 
@@ -202,6 +248,8 @@ check_movie_name <- \(name) {
   )
 
   list(
+    value = name,
+    sanitized_value = movie_name,
     is_valid = is_valid,
     msg = msg,
     input_class = input_class,
