@@ -110,7 +110,35 @@ validate_rating <- \(req, res) {
   body <- parse_multipart(req)
   rating <- as.integer(body$rating %||% 0)
 
-  valid_ratings <- 1:5
+  validity <- check_rating(rating)
+
+  html <- select_input(
+    id = "rating",
+    label = "Rating",
+    choices = 5:1,
+    selected = rating,
+    hx_post = "/movies/validate/rating",
+    input_class = validity$input_class,
+    tags$div(
+      class = validity$feedback_class,
+      validity$msg
+    )
+  )
+
+  res$send(html)
+}
+
+#' Check if a rating value is valid
+#'
+#' @param rating Integer. The rating.
+#' @param valid_ratings An integer vector. Valid ratings.
+#' @return Named list with the following elements:
+#' - `is_valid`: Whether the rating is valid.
+#' - `msg`: Message.
+#' - `input_class`: Input class.
+#' - `feedback_class`: Feedback class.
+#' @export
+check_rating <- \(rating, valid_ratings = 1:5) {
   is_valid <- rating %in% valid_ratings
 
   msg <- "Looks good!"
@@ -123,18 +151,10 @@ validate_rating <- \(req, res) {
     feedback_class <- "invalid-feedback"
   }
 
-  html <- select_input(
-    id = "rating",
-    label = "Rating",
-    choices = 5:1,
-    selected = rating,
-    hx_post = "/movies/validate/rating",
+  list(
+    is_valid = is_valid,
+    msg = msg,
     input_class = input_class,
-    tags$div(
-      class = feedback_class,
-      msg
-    )
+    feedback_class = feedback_class
   )
-
-  res$send(html)
 }
