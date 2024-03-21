@@ -1,9 +1,11 @@
 box::use(
   htmltools[tags],
+  lubridate[year, now],
   stringr[str_to_title],
   ambiorix[parse_multipart],
   .. / store / movies[movies],
   .. / store / text_input[text_input],
+  .. / store / select_input[select_input],
   .. / store / movie_collection[movie_collection],
   .. / helpers / operators[`%||%`],
   .. / templates / template_path[template_path]
@@ -69,7 +71,36 @@ validate_name <- \(req, res) {
 #'
 #' @export
 validate_year <- \(req, res) {
-  res
+  body <- parse_multipart(req)
+  year <- as.integer(body$release_year %||% 0)
+
+  valid_years <- 1888:year(now())
+  is_valid <- year %in% valid_years
+
+  msg <- "Looks good!"
+  input_class <- "is-valid"
+  feedback_class <- "valid-feedback"
+
+  if (!is_valid) {
+    msg <- "Invalid release year!"
+    input_class <- "is-invalid"
+    feedback_class <- "invalid-feedback"
+  }
+
+  html <- select_input(
+    id = "release_year",
+    label = "Year",
+    choices = 1888:year(now()),
+    selected = year,
+    hx_post = "/movies/validate/year",
+    input_class = input_class,
+    tags$div(
+      class = feedback_class,
+      msg
+    )
+  )
+
+  res$send(html)
 }
 
 #' Handle POST at '/movies/validate/rating'
