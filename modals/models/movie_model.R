@@ -11,104 +11,104 @@ box::use(
 #' Movie schema
 #'
 #' @examples
-#' xmen <- Movie$new(name = "X-men", year = 2000L, rating = 5L)
+#' \dontrun{
+#' # create a Movie instance:
+#' movies <- Movie$new()
 #'
-#' xmen$add()
+#' # add x-men:
+#' movies$add(name = "x-men", year = 2000L, rating = 5L)
+#' # update the name:
+#' movies$update(name = "x-men", new_name = "x-men (the last stand)")
 #'
-#' xmen$update(
-#'   new_name = "X-men (new mutants)",
-#'   new_year = 2018L,
-#'   new_rating = 4L
-#' )
-#'
-#' lotr <- Movie$new(name = "LOTR", year = 2003L, rating = 5L)
-#'
-#' lotr$add()
-#'
-#' lotr$delete()
-#'
-#' lotr$check_exists() # should return FALSE (invisibly)
-#'
+#' # delete lotr:
+#' movies$delete(name = "lotr")
+#' }
 #' @export
 Movie <- R6Class(
   classname = "Movie",
   public = list(
-    name = NULL,
-    year = NULL,
-    rating = NULL,
-
-    #' Init method
+    #' Add movie to database
     #'
     #' @param name Movie name.
-    #' @param year Release year.
+    #' @param year Year of release.
     #' @param rating Movie rating.
-    initialize = \(name, year, rating) {
+    #' @return self (invisibly)
+    add = \(name, year, rating) {
       self$check_name(name)
       self$check_year(year)
       self$check_rating(rating)
 
-      self$name <- str_to_title(name)
-      self$year <- year
-      self$rating <- rating
-    },
+      name <- str_to_title(name)
+      self$check_exists(name)
 
-    #' Add movie to database
-    #'
-    #' @return self (invisibly)
-    add = \() {
-      details <- data.frame(
-        name = self$name,
-        year = self$year,
-        rating = self$rating
-      )
-
-      self$check_exists()
+      details <- data.frame(name, year, rating)
       modals_conn$insert(data = details)
+
       invisible(self)
     },
 
     #' Update movie details
     #'
+    #' @param name Name of the movie to update.
     #' @param new_name New name of the movie.
     #' @param new_year New release year of the movie.
     #' @param new_rating New rating of the movie.
     #' @return self (invisibly)
-    update = \(new_name = NULL, new_year = NULL, new_rating = NULL) {
-      new_name <- new_name %||% self$name
-      new_year <- new_year %||% self$year
-      new_rating <- new_rating %||% self$rating
+    update = \(
+      name,
+      new_name = NULL,
+      new_year = NULL,
+      new_rating = NULL
+    ) {
+      self$check_name(name)
+      name <- str_to_title(name)
 
-      self$check_name(new_name)
-      self$check_year(new_year)
-      self$check_rating(new_rating)
+      updates <- list()
+
+      if (!is.null(new_name)) {
+        new_name <- str_to_title(new_name)
+        self$check_name(new_name)
+        updates$name <- new_name
+      }
+
+      if (!is.null(new_year)) {
+        self$check_year(new_year)
+        updates$year <- new_year
+      }
+
+      if (!is.null(new_rating)) {
+        self$check_rating(new_rating)
+        updates$rating <- new_rating
+      }
+
+      # if no updates to make, return self:
+      if (identical(length(updates), 0L)) {
+        return(invisible(self))
+      }
 
       modals_conn$update(
         query = mongo_query(
-          name = self$name
+          name = name
         ),
         update = mongo_query(
-          "$set" = list(
-            name = new_name,
-            year = new_year,
-            rating = new_rating
-          )
+          "$set" = updates
         )
       )
-
-      self$name <- new_name
-      self$year <- new_year
-      self$rating <- new_rating
 
       invisible(self)
     },
 
     #' Delete movie
     #'
+    #' @param name Movie name to delete.
     #' @return self (invisibly)
-    delete = \() {
+    delete = \(name) {
+      self$check_name(name)
+      name <- str_to_title(name)
+
       modals_conn$remove(
         query = mongo_query(
-          name = self$name
+          name = name
         )
       )
 
@@ -117,16 +117,17 @@ Movie <- R6Class(
 
     #' Check if movie already exists in the database
     #'
+    #' @param name Movie name.
     #' @return `FALSE` (invisibly) if movie does not exist.
     #' Throws an error otherwise.
-    check_exists = \() {
+    check_exists = \(name) {
       n <- modals_conn$count(
-        query = mongo_query(name = self$name)
+        query = mongo_query(name = name)
       )
       movie_exists <- n > 0
 
       if (movie_exists) {
-        msg <- glue("The movie '{self$name}' already exists!")
+        msg <- glue("The movie '{name}' already exists!")
         stop(msg, call. = FALSE)
       }
       invisible(FALSE)
