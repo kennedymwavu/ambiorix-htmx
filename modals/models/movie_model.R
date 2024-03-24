@@ -2,6 +2,7 @@ box::use(
   glue[glue],
   R6[R6Class],
   lubridate[year, now],
+  data.table[setnames, as.data.table],
   stringr[str_to_title],
   .. / config / db[modals_conn],
   .. / helpers / operators[`%||%`],
@@ -29,12 +30,30 @@ Movie <- R6Class(
   public = list(
     #' Get/read all movies from the database
     #' 
-    #' @return A data.frame object with 3 columns:
+    #' @param rename Logical. Whether to rename the columns of the resulting
+    #' data.frame in this format:
+    #' name -> Title
+    #' year -> Year
+    #' rating -> Rating
+    #' Defaults to `TRUE`.
+    #' @return A data.table object with 3 columns. If `rename = TRUE`:
     #' - name
     #' - year
     #' - rating
-    read = \() {
-      modals_conn$find()
+    #' Otherwise, the column names are:
+    #' - Title
+    #' - Year
+    #' - Rating
+    read = \(rename = TRUE) {
+      collection <- modals_conn$find() |> as.data.table()
+      if (rename) {
+        setnames(
+          x = collection,
+          old = c("name", "year", "rating"),
+          new = c("Title", "Year", "Rating")
+        )
+      }
+      collection
     },
     #' Add movie to database
     #'
