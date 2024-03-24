@@ -27,6 +27,15 @@ box::use(
 Movie <- R6Class(
   classname = "Movie",
   public = list(
+    #' Get/read all movies from the database
+    #' 
+    #' @return A data.frame object with 3 columns:
+    #' - name
+    #' - year
+    #' - rating
+    read = \() {
+      modals_conn$find()
+    },
     #' Add movie to database
     #'
     #' @param name Movie name.
