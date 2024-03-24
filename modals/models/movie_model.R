@@ -170,7 +170,9 @@ Movie <- R6Class(
     #' @return `TRUE` (invisibly) if all checks pass.
     #' Otherwise, an error is thrown.
     check_name = \(name) {
-      is_valid <- is.character(name) && identical(length(name), 1L)
+      is_valid <- is.character(name) &&
+        identical(length(name), 1L) &&
+        nchar(name) > 1
       if (!is_valid) {
         msg <- "Movie name must be a length 1 character vector."
         stop(msg, call. = FALSE)
