@@ -14,6 +14,7 @@ box::use(
 #' - `Year` : Year of release
 #' - `Rating` : Movie rating
 #' - `Action` : Edit buttons
+#' @param ... Passed to [create_table()]
 #' @param movie_collection A named list, a data.frame or a data.table object
 #' with 3 columns:
 #' - `Title` : Character vector.
@@ -21,7 +22,7 @@ box::use(
 #' - `Rating` : Numeric vector.
 #' @return An object of class `shiny.tag`
 #' @export
-create_movie_table <- \(movie_collection) {
+create_movie_table <- \(..., movie_collection) {
   dt <- as.data.table(movie_collection)
   dt[, Rating := create_rating_stars(num_of_filled_stars = Rating)]
   dt[
@@ -38,6 +39,7 @@ create_movie_table <- \(movie_collection) {
   ]
 
   create_table(
+    ...,
     data = dt,
     id = "movie_table",
     add_row_numbers = TRUE,

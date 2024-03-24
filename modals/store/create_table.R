@@ -6,14 +6,16 @@ box::use(
 
 #' Create table
 #'
+#' @param ... Additional tags appended before the end of the table container.
 #' @param data An object of class data.frame, data.table or a named list, from
 #' which to create the table.
-#' @param id Table id.
+#' @param id id of the table container div.
 #' @param add_row_numbers Logical. Whether to add row numbers. Defaults
 #' to `FALSE`.
 #' @param wrap Logical. Should long text be wrapped? Defaults to `TRUE`.
 #' @export
 create_table <- \(
+  ...,
   data,
   id,
   add_row_numbers = FALSE,
@@ -72,11 +74,12 @@ create_table <- \(
 
   tags$div(
     class = "table-responsive",
+    id = id,
     tags$table(
-      id = id,
       class = "table table-hover",
       thead,
       tbody
-    )
+    ),
+    ...
   )
 }

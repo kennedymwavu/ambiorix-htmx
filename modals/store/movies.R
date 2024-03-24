@@ -37,7 +37,7 @@ page <- \(movie_collection) {
           "A sample project that shows how to support modal",
           "forms with ambiorix + htmx"
         ),
-        create_movie_table(movie_collection),
+        create_movie_table(movie_collection = movie_collection),
         create_modal_trigger_btn(
           `hx-get` = "/movies/new_movie_form",
           `hx-target` = "#new_movie_form",
