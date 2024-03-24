@@ -22,3 +22,15 @@
 "%||%" <- \(x, y) {
   if (is.null(x)) y else x
 }
+
+#' Not-in operator
+#'
+#' This operator of the opposite of the `%in%` operator
+#' @param x The vector to be checked for.
+#' @param y The vector to check in.
+#' @examples
+#' "a" %!in% letters # FALSE, 'a' is in letters
+#' "aa" %!in% letters # TRUE, 'aa' is NOT in letters
+#' @return Logical.
+#' @export
+"%!in%" <- Negate(`%in%`)
