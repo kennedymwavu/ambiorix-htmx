@@ -29,10 +29,17 @@ create_movie_table <- \(..., movie_collection) {
     ,
     Action := replicate(
       n = .N,
-      expr = create_button(
-        class = "btn btn-primary btn-sm",
-        tags$i(class = "bi bi-pencil-square"),
-        "Edit"
+      expr = tags$div(
+        create_button(
+          class = "btn btn-outline-primary btn-sm",
+          tags$i(class = "bi bi-pencil-square"),
+          "Edit"
+        ),
+        create_button(
+          class = "btn btn-outline-danger btn-sm",
+          tags$i(class = "bi bi-trash"),
+          "Delete"
+        )
       ),
       simplify = FALSE
     )
