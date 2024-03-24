@@ -4,12 +4,12 @@ box::use(
   stringr[str_to_title],
   data.table[rbindlist],
   ambiorix[parse_multipart],
-  .. / store / movies[movies],
+  .. / store / movies[movie_page = page],
   .. / store / text_input[text_input],
   .. / store / select_input[select_input],
   .. / store / create_movie_table[create_movie_table],
-  .. / store / movie_collection[movie_collection],
   .. / helpers / operators[`%||%`],
+  .. / models / movie_model[Movie],
   .. / templates / template_path[template_path]
 )
 
@@ -17,11 +17,12 @@ box::use(
 #'
 #' @export
 home_get <- \(req, res) {
+  movie_collection <- Movie$new()$read()
   res$render(
     template_path("page.html"),
     list(
       title = "Movies",
-      content = movies()
+      content = movie_page(movie_collection)
     )
   )
 }
@@ -43,14 +44,14 @@ add_movie <- \(req, res) {
     )
   }
 
-  movie <- list(
-    Title = movie_name$sanitized_value,
-    Year = release_year$sanitized_value,
-    Rating = rating$sanitized_value
-  )
+  name <- movie_name$sanitized_value
+  year <- release_year$sanitized_value
+  rating <- rating$sanitized_value
 
-  movie_collection <- rbindlist(l = list(movie_collection, movie))
-  html <- create_movie_table(movie_collection)
+  movies <- Movie$new()
+  movies$add(name = name, year = year, rating = rating)
+
+  html <- movies$read() |> create_movie_table()
 
   return(
     res$send(html)
@@ -217,7 +218,13 @@ check_movie_name <- \(name) {
   feedback_class <- "valid-feedback"
 
   has_few_chars <- nchar(movie_name) <= 1
-  movie_exists <- movie_name %in% movie_collection$Title
+  movie_exists <- tryCatch(
+    expr = Movie$new()$check_exists(name),
+    error = \(e) {
+      # if the expression above throws an error, it implies the movie exists:
+      TRUE
+    }
+  )
 
   is_invalid <- has_few_chars || movie_exists
   is_valid <- !is_invalid
