@@ -1,4 +1,5 @@
 box::use(
+  glue[glue],
   htmltools[tags],
   lubridate[year, now],
   stringr[str_to_title],
@@ -7,6 +8,12 @@ box::use(
   .. / store / movies[
     movie_page = page,
     new_movie_form
+  ],
+  .. / store / toastr[
+    toastr_info,
+    toastr_warning,
+    toastr_success,
+    toastr_error
   ],
   .. / store / text_input[text_input],
   .. / store / select_input[select_input],
@@ -54,7 +61,12 @@ add_movie <- \(req, res) {
   movies <- Movie$new()
   movies$add(name = name, year = year, rating = rating)
 
-  html <- movies$read() |> create_movie_table()
+  html <- create_movie_table(
+    movie_collection = movies$read(),
+    toastr_success(
+      msg = glue("'{name}' added.")
+    )
+  )
 
   return(
     res$send(html)
