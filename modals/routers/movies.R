@@ -5,7 +5,8 @@ box::use(
     add_movie,
     validate_name,
     validate_year,
-    validate_rating
+    validate_rating,
+    get_new_movie_form
   ]
 )
 
@@ -18,4 +19,5 @@ router <- Router$
   post("/add_movie", add_movie)$
   post("/validate/name", validate_name)$
   post("/validate/year", validate_year)$
-  post("/validate/rating", validate_rating)
+  post("/validate/rating", validate_rating)$
+  get("/new_movie_form", get_new_movie_form)

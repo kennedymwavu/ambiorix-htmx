@@ -4,7 +4,10 @@ box::use(
   stringr[str_to_title],
   data.table[rbindlist],
   ambiorix[parse_multipart],
-  .. / store / movies[movie_page = page],
+  .. / store / movies[
+    movie_page = page,
+    new_movie_form
+  ],
   .. / store / text_input[text_input],
   .. / store / select_input[select_input],
   .. / store / create_movie_table[create_movie_table],
@@ -56,6 +59,13 @@ add_movie <- \(req, res) {
   return(
     res$send(html)
   )
+}
+
+#' Handle GET at '/movies/new_movie_form'
+#'
+#' @export
+get_new_movie_form <- \(req, res) {
+  res$send(new_movie_form())
 }
 
 #' Handle POST at '/movies/validate/name'

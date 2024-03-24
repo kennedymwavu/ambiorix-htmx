@@ -39,6 +39,9 @@ page <- \(movie_collection) {
         ),
         create_movie_table(movie_collection),
         create_modal_trigger_btn(
+          `hx-get` = "/movies/new_movie_form",
+          `hx-target` = "#new_movie_form",
+          `hx-swap` = "innerHTML",
           modal_id = "add_movie_modal",
           class = "btn btn-outline-primary my-3",
           tags$i(class = "bi bi-plus-lg"),
@@ -49,7 +52,7 @@ page <- \(movie_collection) {
     create_modal(
       id = "add_movie_modal",
       title = "Add a movie",
-      body = new_movie_form()
+      body = tags$div(id = "new_movie_form")
     )
   )
 }
@@ -59,13 +62,14 @@ page <- \(movie_collection) {
 #' @export
 new_movie_form <- \(
   name_value = "",
-  year_value = 2000L,
-  rating_value = 5L
+  year_value = 2014L,
+  rating_value = 4L
 ) {
   tags$form(
     `hx-target` = "#movie_table",
     `hx-swap` = "outerHTML",
     `hx-post` = "/movies/add_movie",
+    `hx-on::after-request` = "this.reset()",
     text_input(
       id = "movie_name",
       label = "Name",
@@ -97,6 +101,7 @@ new_movie_form <- \(
       create_button(
         type = "submit",
         class = "btn btn-success btn-sm",
+        `data-bs-dismiss` = "modal",
         tags$i(class = "bi bi-check-lg"),
         "Add movie"
       )
