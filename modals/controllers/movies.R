@@ -46,26 +46,27 @@ add_movie <- \(req, res) {
   release_year <- check_release_year(body$release_year)
   rating <- check_rating(body$rating)
 
-  all_valid <- movie_name$is_valid && release_year$is_valid && rating$is_valid
-
-  if (!all_valid) {
-    return(
-      res$send(tags$h3("Something is not right!"))
-    )
-  }
-
   name <- movie_name$sanitized_value
   year <- release_year$sanitized_value
   rating <- rating$sanitized_value
 
   movies <- Movie$new()
-  movies$add(name = name, year = year, rating = rating)
+
+  toast <- tryCatch(
+    expr = {
+      movies$add(name = name, year = year, rating = rating)
+      toastr_success(msg = glue("'{name}' added."))
+    },
+    error = \(e) {
+      msg <- conditionMessage(e)
+      print(msg)
+      toastr_error(msg = msg)
+    }
+  )
 
   html <- create_movie_table(
     movie_collection = movies$read(),
-    toastr_success(
-      msg = glue("'{name}' added.")
-    )
+    toast
   )
 
   return(
