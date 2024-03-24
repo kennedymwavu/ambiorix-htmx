@@ -29,7 +29,7 @@ Movie <- R6Class(
   classname = "Movie",
   public = list(
     #' Get/read all movies from the database
-    #' 
+    #'
     #' @param rename Logical. Whether to rename the columns of the resulting
     #' data.frame in this format:
     #' name -> Title
@@ -149,6 +149,9 @@ Movie <- R6Class(
     #' @return `FALSE` (invisibly) if movie does not exist.
     #' Throws an error otherwise.
     check_exists = \(name) {
+      self$check_name(name)
+      name <- str_to_title(name)
+
       n <- modals_conn$count(
         query = mongo_query(name = name)
       )
