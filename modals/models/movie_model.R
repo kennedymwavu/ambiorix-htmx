@@ -96,6 +96,10 @@ Movie <- R6Class(
       if (!is.null(new_name)) {
         new_name <- str_to_title(new_name)
         self$check_name(new_name)
+        if (!identical(name, new_name)) {
+          # check if 'new_name' already exists:
+          self$check_exists(new_name)
+        }
         updates$name <- new_name
       }
 
