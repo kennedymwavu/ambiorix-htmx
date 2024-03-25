@@ -24,6 +24,8 @@ Persistent storage has been implemented using MongoDB.
 
 ![Input validation 2](./demos/validation-2.png)
 
+![Input validation 3](./demos/validation-3.png)
+
 # Prerequisites
 
 - An installation of the community edition of [MongoDB](https://www.mongodb.com/docs/manual/administration/install-community/)
