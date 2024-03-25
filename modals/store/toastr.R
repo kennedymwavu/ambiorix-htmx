@@ -38,7 +38,7 @@ toastr <- \(type, title = NULL, msg = NULL) {
 #' @inheritParams toastr
 #' @inherit toastr return
 #' @export
-toastr_info <- \(title = "Info", msg = NULL) {
+toastr_info <- \(title = "", msg = NULL) {
   toastr(type = "info", title = title, msg = msg)
 }
 
@@ -56,7 +56,7 @@ toastr_warning <- \(title = "Warning!", msg = NULL) {
 #' @inheritParams toastr
 #' @inherit toastr return
 #' @export
-toastr_success <- \(title = "Success!", msg = NULL) {
+toastr_success <- \(title = "", msg = NULL) {
   toastr(type = "success", title = title, msg = msg)
 }
 
