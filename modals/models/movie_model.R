@@ -2,8 +2,8 @@ box::use(
   glue[glue],
   R6[R6Class],
   lubridate[year, now],
-  data.table[setnames, as.data.table],
   stringr[str_to_title],
+  data.table[data.table, as.data.table, setnames],
   .. / config / db[modals_conn],
   .. / helpers / operators[`%||%`],
   .. / helpers / mongo_query[mongo_query]
@@ -46,6 +46,12 @@ Movie <- R6Class(
     #' - Rating
     read = \(rename = TRUE) {
       collection <- modals_conn$find() |> as.data.table()
+
+      if (nrow(collection) == 0L) {
+        name <- year <- rating <- character()
+        collection <- data.table(name, year, rating)
+      }
+
       if (rename) {
         setnames(
           x = collection,
@@ -53,6 +59,7 @@ Movie <- R6Class(
           new = c("Title", "Year", "Rating")
         )
       }
+
       collection
     },
     #' Add movie to database
