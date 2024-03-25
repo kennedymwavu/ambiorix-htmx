@@ -53,42 +53,56 @@ page <- \(movie_collection) {
       id = "add_movie_modal",
       title = "Add a movie",
       body = tags$div(id = "new_movie_form")
+    ),
+    create_modal(
+      id = "edit_movie_modal",
+      title = "Edit movie details",
+      body = tags$div(id = "edit_movie_form")
     )
   )
 }
 
 #' New movie form
 #'
+#' @param name_value String. Movie name.
+#' @param year_value Integer. Year of release.
+#' @param rating_value Integer. Movie rating.
+#' @param type String. Type of form. Either "add" (default) or "edit".
+#' @return An object of class `shiny.tag`.
 #' @export
 new_movie_form <- \(
   name_value = "",
   year_value = 2014L,
-  rating_value = 4L
+  rating_value = 4L,
+  type = "add"
 ) {
+  add <- identical(type, "add")
+
   tags$form(
     `hx-target` = "#movie_table",
     `hx-swap` = "outerHTML",
-    `hx-post` = "/movies/add_movie",
+    `hx-post` = if (add) "/movies/add_movie" else "/movies/edit_movie",
+    `hx-vals` = if (add) NULL else sprintf('{"name": "%s"}', name_value),
     `hx-on::after-request` = "this.reset()",
     text_input(
       id = "movie_name",
       label = "Name",
       value = name_value,
-      hx_post = "/movies/validate/name"
+      hx_post = if (add) "/movies/validate/name" else NULL
     ),
     select_input(
       id = "release_year",
       label = "Year",
       choices = 1888:year(now()),
       selected = year_value,
-      hx_post = "/movies/validate/year"
+      hx_post = if (add) "/movies/validate/year" else NULL
     ),
     select_input(
       id = "rating",
       label = "Rating",
       choices = 5:1,
       selected = rating_value,
-      hx_post = "/movies/validate/rating"
+      hx_post = if (add) "/movies/validate/rating" else NULL
     ),
     tags$div(
       class = "w-100 d-flex justify-content-between",
@@ -103,7 +117,7 @@ new_movie_form <- \(
         class = "btn btn-success btn-sm",
         `data-bs-dismiss` = "modal",
         tags$i(class = "bi bi-check-lg"),
-        "Add movie"
+        if (add) "Add movie" else "Save changes"
       )
     )
   )
