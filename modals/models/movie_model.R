@@ -147,21 +147,28 @@ Movie <- R6Class(
       invisible(self)
     },
 
-    #' Check if movie already exists in the database
+    #' Does movie already exist in the database?
     #'
-    #' @param name Movie name.
-    #' @return `FALSE` (invisibly) if movie does not exist.
-    #' Throws an error otherwise.
-    check_exists = \(name) {
+    #' @param name String. Movie name.
+    #' @return Logical. `TRUE` if movie already exists, `FALSE` otherwise.
+    movie_exists = \(name) {
       self$check_name(name)
       name <- str_to_title(name)
 
       n <- modals_conn$count(
         query = mongo_query(name = name)
       )
-      movie_exists <- n > 0
 
-      if (movie_exists) {
+      n > 0L
+    },
+
+    #' Check if movie already exists in the database
+    #'
+    #' @param name Movie name.
+    #' @return `FALSE` (invisibly) if movie does not exist.
+    #' Throws an error otherwise.
+    check_exists = \(name) {
+      if (self$movie_exists(name)) {
         msg <- glue("The movie '{name}' already exists!")
         stop(msg, call. = FALSE)
       }
@@ -178,7 +185,7 @@ Movie <- R6Class(
         identical(length(name), 1L) &&
         nchar(name) > 1
       if (!is_valid) {
-        msg <- "Movie name must be a length 1 character vector."
+        msg <- "Movie name must be a string with at least 2 characters."
         stop(msg, call. = FALSE)
       }
 
