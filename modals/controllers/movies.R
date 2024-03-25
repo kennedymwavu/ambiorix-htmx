@@ -332,30 +332,20 @@ check_movie_name <- \(name) {
   input_class <- "is-valid"
   feedback_class <- "valid-feedback"
 
-  has_few_chars <- nchar(movie_name) <= 1
-  movie_exists <- tryCatch(
-    expr = Movie$new()$check_exists(name),
-    error = \(e) {
-      # if the expression above throws an error, it implies the movie exists:
+  is_valid <- tryCatch(
+    expr = {
+      Movie$new()$check_exists(name)
+      # if the expression above doesn't throw an error, then the name is valid
       TRUE
+    },
+    error = \(e) {
+      # otherwise, the name is invalid:
+      msg <<- conditionMessage(e)
+      input_class <<- "is-invalid"
+      feedback_class <<- "invalid-feedback"
+      FALSE
     }
   )
-
-  is_invalid <- has_few_chars || movie_exists
-  is_valid <- !is_invalid
-
-  if (is_invalid) {
-    if (has_few_chars) {
-      msg <- "Name must be a string of more than one character."
-    }
-
-    if (movie_exists) {
-      msg <- "Movie already exists!"
-    }
-
-    input_class <- "is-invalid"
-    feedback_class <- "invalid-feedback"
-  }
 
   html <- text_input(
     id = "movie_name",
