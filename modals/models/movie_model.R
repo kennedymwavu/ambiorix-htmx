@@ -177,6 +177,16 @@ Movie <- R6Class(
         msg <- "Movie name must be a length 1 character vector."
         stop(msg, call. = FALSE)
       }
+
+      invalid_chars <- c("{", "}")
+      has_invalid_chars <- any(
+        invalid_chars %in% strsplit(name, split = "")[[1]]
+      )
+      if (has_invalid_chars) {
+        msg <- "Invalid movie name!"
+        stop(msg, call. = FALSE)
+      }
+
       invisible(TRUE)
     },
 
