@@ -3,7 +3,8 @@ box::use(
   data.table[as.data.table],
   . / create_table[create_table],
   . / create_button[create_button],
-  . / create_rating_stars[create_rating_stars]
+  . / create_rating_stars[create_rating_stars],
+  . / create_modal_trigger_btn[create_modal_trigger_btn]
 )
 
 #' Create movie table
@@ -65,9 +66,12 @@ create_movie_table_buttons <- \(name, year, rating) {
     X = hx_vals,
     FUN = \(hx_val) {
       tags$div(
-        create_button(
+        create_modal_trigger_btn(
+          modal_id = "edit_movie_modal",
           class = "btn btn-outline-primary btn-sm",
-          `hx-post` = "/movies/edit_movie",
+          `hx-post` = "/movies/edit_movie_form",
+          `hx-target` = "#edit_movie_form",
+          `hx-swap` = "innerHTML",
           `hx-vals` = hx_val,
           tags$i(class = "bi bi-pencil-square"),
           "Edit"
