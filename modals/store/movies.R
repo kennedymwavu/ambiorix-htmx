@@ -72,7 +72,7 @@ page <- \(movie_collection) {
 #' @export
 new_movie_form <- \(
   name_value = "",
-  year_value = 2014L,
+  year_value = as.integer(year(now()) - 10L),
   rating_value = 4L,
   type = "add"
 ) {
