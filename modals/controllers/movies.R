@@ -69,9 +69,46 @@ add_movie <- \(req, res) {
     toast
   )
 
-  return(
-    res$send(html)
+  res$send(html)
+}
+
+#' Handle POST at '/movies/edit_movie'
+#'
+#' @export
+edit_movie <- \(req, res) {
+  body <- parse_multipart(req)
+  browser()
+  res$send("Hello, World!")
+}
+
+#' Handle DELETE at '/movies/delete_movie'
+#'
+#' @export
+delete_movie <- \(req, res) {
+  body <- parse_multipart(req)
+  movie_name <- check_movie_name(body$movie_name)
+  name <- movie_name$sanitized_value
+
+  movies <- Movie$new()
+
+  toast <- tryCatch(
+    expr = {
+      movies$delete(name = name)
+      toastr_success(msg = glue("'{name}' deleted."))
+    },
+    error = \(e) {
+      msg <- conditionMessage(e)
+      print(msg)
+      toastr_error(msg = msg)
+    }
   )
+
+  html <- create_movie_table(
+    movie_collection = movies$read(),
+    toast
+  )
+
+  res$send(html)
 }
 
 #' Handle GET at '/movies/new_movie_form'
