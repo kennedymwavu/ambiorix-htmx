@@ -5,8 +5,11 @@ box::use(
   . / middleware / error_middleware[error_handler]
 )
 
+host <- Sys.getenv("HOST")
+port <- as.integer(Sys.getenv("PORT"))
+
 Ambiorix$
-  new(host = "127.0.0.1", port = 8000)$
+  new(host = host, port = port)$
   set_error(error_handler)$
   static("public", "static")$
   get("/", home_get)$
