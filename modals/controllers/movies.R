@@ -77,8 +77,40 @@ add_movie <- \(req, res) {
 #' @export
 edit_movie <- \(req, res) {
   body <- parse_multipart(req)
-  browser()
-  res$send("Hello, World!")
+
+  # old movie name:
+  name <- check_movie_name(body$name)$sanitized_value
+
+  # updated values:
+  movie_name <- check_movie_name(body$movie_name)$sanitized_value
+  release_year <- check_release_year(body$release_year)$sanitized_value
+  rating <- check_rating(body$rating)$sanitized_value
+
+  movies <- Movie$new()
+
+  toast <- tryCatch(
+    expr = {
+      movies$update(
+        name = name,
+        new_name = movie_name,
+        new_year = release_year,
+        new_rating = rating
+      )
+      toastr_success(msg = glue("'{name}' updated."))
+    },
+    error = \(e) {
+      msg <- conditionMessage(e)
+      print(msg)
+      toastr_error(msg = msg)
+    }
+  )
+
+  html <- create_movie_table(
+    movie_collection = movies$read(),
+    toast
+  )
+
+  res$send(html)
 }
 
 #' Handle DELETE at '/movies/delete_movie'
@@ -117,6 +149,29 @@ delete_movie <- \(req, res) {
 get_new_movie_form <- \(req, res) {
   res$send(new_movie_form())
 }
+
+#' Handle POST at '/movies/edit_movie_form'
+#'
+#' @export
+edit_movie_form <- \(req, res) {
+  body <- parse_multipart(req)
+  movie_name <- check_movie_name(body$movie_name)
+  release_year <- check_release_year(body$movie_year)
+  rating <- check_rating(body$movie_rating)
+
+  name <- movie_name$sanitized_value
+  year <- release_year$sanitized_value
+  rating <- rating$sanitized_value
+
+  html <- new_movie_form(
+    name_value = name,
+    year_value = year,
+    rating_value = rating,
+    type = "edit"
+  )
+  res$send(html)
+}
+
 
 #' Handle POST at '/movies/validate/name'
 #'
