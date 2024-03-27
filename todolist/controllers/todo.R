@@ -6,6 +6,8 @@ box::use(
     todo_page = page,
     todo_form
   ],
+  .. / store / text_input[text_input],
+  .. / store / create_todo_list[create_todo_list],
   .. / helpers / operators[`%||%`],
   .. / templates / template_path[template_path]
 )
@@ -23,4 +25,23 @@ home_get <- \(req, res) {
       content = todo_page(items = todos)
     )
   )
+}
+
+#' Handle POST at '/add_todo'
+#'
+#' @export
+add_todo <- \(req, res) {
+  body <- parse_multipart(req)
+  item <- body$name %||% ""
+
+  todos <- Todo$new()
+
+  is_valid <- !identical(item, "")
+  if (is_valid) {
+    todos$add(item)
+  }
+
+  html <- create_todo_list(todos$read())
+
+  res$send(html)
 }

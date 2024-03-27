@@ -1,7 +1,8 @@
 box::use(
   ambiorix[Router],
   .. / controllers / todo[
-    home_get
+    home_get,
+    add_todo
   ]
 )
 
@@ -10,4 +11,5 @@ box::use(
 #' @export
 router <- Router$
   new("/")$
-  get("/", home_get)
+  get("/", home_get)$
+  post("/add_todo", add_todo)
