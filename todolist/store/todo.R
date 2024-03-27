@@ -2,7 +2,8 @@ box::use(
   htmltools[tags, tagList],
   . / text_input[text_input],
   . / create_card[create_card],
-  . / create_button[create_button]
+  . / create_button[create_button],
+  . / create_todo_list[create_todo_list]
 )
 
 #' The todo page
@@ -21,7 +22,11 @@ page <- \(items) {
         title = "Get Things Done!",
         title_icon = tags$i(class = "bi bi-journal-text"),
         title_class = "text-primary text-center",
-        todo_form()
+        todo_form(),
+        tags$div(
+          id = "todo_items",
+          create_todo_list(items)
+        )
       )
     )
   )
@@ -37,24 +42,28 @@ todo_form <- \(item_value = "", type = "add") {
   add <- identical(type, "add")
 
   tags$form(
-    `hx-target` = "#todo_table",
-    `hx-swap` = "outerHTML",
+    `hx-target` = "#todo_items",
+    `hx-swap` = "innerHTML",
     `hx-post` = if (add) "/add_todo" else "/edit_todo",
     `hx-vals` = if (add) NULL else sprintf('{"item_value": "%s"}', item_value),
     `hx-on::after-request` = "this.reset()",
-    text_input(
-      id = "name",
-      label = "",
-      value = item_value,
-      hx_post = if (add) "/validate/item" else NULL
-    ),
-    create_button(
-      type = "submit",
-      class = "btn btn-success",
-      tags$i(
-        class = if (add) "bi bi-plus-lg" else "bi bi-check-lg"
+    tags$div(
+      class = "input-group mb-3 d-flex",
+      text_input(
+        id = "name",
+        class = "flex-grow-1",
+        input_class = "rounded-end-0",
+        value = item_value,
+        aria_label = "Todo item"
       ),
-      if (add) "Add Task" else "Save"
+      create_button(
+        type = "submit",
+        id = "add_btn",
+        class = "btn btn-success",
+        tags$i(
+          class = if (add) "bi bi-plus-lg" else "bi bi-check-lg"
+        )
+      )
     )
   )
 }
