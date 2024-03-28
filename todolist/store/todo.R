@@ -25,6 +25,8 @@ page <- \(items) {
         todo_form(),
         tags$div(
           id = "todo_items",
+          `hx-target` = "this",
+          `hx-swap` = "innerHTML",
           create_todo_list(items)
         )
       )
