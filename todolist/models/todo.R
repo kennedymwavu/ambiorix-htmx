@@ -13,13 +13,24 @@ Todo <- R6Class(
   public = list(
     #' Get/read all todos from the database
     #'
-    #' @return A data.table object with 1 column:
-    #' - item
+    #' @return A data.table object with 2 columns:
+    #' - _id : The id of the todo item.
+    #' - item : The todo item.
     read = \() {
-      todos <- todos_conn$find() |> as.data.table()
+      todos <- todos_conn$find(
+        fields = mongo_query(
+          `_id` = TRUE,
+          item = TRUE,
+          status = TRUE
+        )
+      ) |> as.data.table()
 
       if (nrow(todos) == 0L) {
-        todos <- data.table(item = character())
+        todos <- data.table(
+          item = character(),
+          `_id` = character(),
+          status = logical()
+        )
       }
 
       todos
@@ -28,28 +39,42 @@ Todo <- R6Class(
     #' Add a todo to the database
     #'
     #' @param item String. The todo item.
+    #' @param status Logical. Status of the todo item.
+    #' `FALSE` (default) indicates the todo item is still pending ie. not done.
+    #' `TRUE` indicates that the todo item is done ie. completed.
     #' @return self (invisibly)
-    add = \(item) {
-      todos_conn$insert(data = data.table(item))
+    add = \(item, status = FALSE) {
+      todos_conn$insert(data = data.table(item, status))
       invisible(self)
     },
 
     #' Update a todo item
     #'
-    #' @param item String. The todo item to update.
+    #' @param item_id String. The id of the todo item to update.
     #' @param new_description String. The new description of the todo item.
+    #' @param new_status Logical. The new status of the todo item.
     #' @return self (invisibly)
-    update = \(item, new_description) {
-      updates <- list(item = new_description)
+    update = \(item_id, new_description = NULL, new_status = NULL) {
+      updates <- list()
 
-      todos_conn$update(
-        query = mongo_query(
-          item = item
-        ),
-        update = mongo_query(
-          "$set" = updates
+      if (!is.null(new_description)) {
+        updates$item <- new_description
+      }
+
+      if (!is.null(new_status)) {
+        updates$status <- new_status
+      }
+
+      if (length(updates) > 0L) {
+        todos_conn$update(
+          query = mongo_query(
+            "_id" = list("$oid" = item_id)
+          ),
+          update = mongo_query(
+            "$set" = updates
+          )
         )
-      )
+      }
 
       invisible(self)
     },
