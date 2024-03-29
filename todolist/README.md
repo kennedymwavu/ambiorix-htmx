@@ -40,7 +40,7 @@ A big upgrade from "Hello, World!", tbh.
     HOST = 127.0.0.1
     PORT = 8000
     ```
-You can change the values of the variables to suit your environment.
+    You can change the values of the variables to suit your environment.
 
 # Start app
 
