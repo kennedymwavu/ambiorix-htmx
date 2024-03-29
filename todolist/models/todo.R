@@ -13,11 +13,22 @@ Todo <- R6Class(
   public = list(
     #' Get/read all todos from the database
     #'
+    #' @param id String. The id of the todo item to read.
+    #' `NULL` (default) indicates that all todo items should be read.
     #' @return A data.table object with 2 columns:
     #' - _id : The id of the todo item.
     #' - item : The todo item.
-    read = \() {
+    read = \(id = NULL) {
+      query <- "{}"
+
+      if (!is.null(id)) {
+        query <- mongo_query(
+          "_id" = list("$oid" = id)
+        )
+      }
+
       todos <- todos_conn$find(
+        query = query,
         fields = mongo_query(
           `_id` = TRUE,
           item = TRUE,
