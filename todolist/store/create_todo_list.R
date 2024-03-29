@@ -1,6 +1,7 @@
 box::use(
   htmltools[tags],
-  data.table[as.data.table]
+  data.table[as.data.table],
+  . / create_button[create_button]
 )
 
 #' Create a todo list group
@@ -38,23 +39,43 @@ create_list_item <- \(item, id, status) {
           "list-group-item",
           if (the_status) "list-group-item-success"
         ),
-        tags$input(
-          type = "checkbox",
-          class = "form-check-input me-1",
-          value = "",
-          id = the_id,
-          name = "item_id",
-          value = the_id,
-          checked = if (the_status) NA else NULL,
-          `hx-put` = paste0("/check_todo/", the_id)
-        ),
-        tags$label(
-          class = paste(
-            "form-check-label",
-            if (the_status) "text-decoration-line-through"
+        tags$div(
+          class = "d-flex justify-content-between align-items-end",
+          tags$div(
+            tags$input(
+              type = "checkbox",
+              class = "form-check-input me-1",
+              value = "",
+              id = the_id,
+              name = "item_id",
+              value = the_id,
+              checked = if (the_status) NA else NULL,
+              `hx-put` = paste0("/check_todo/", the_id)
+            ),
+            tags$label(
+              class = paste(
+                "form-check-label",
+                if (the_status) "text-decoration-line-through"
+              ),
+              `for` = the_id,
+              the_item
+            )
           ),
-          `for` = the_id,
-          the_item
+          tags$div(
+            class = "btn-group",
+            role = "group",
+            `aria-label` = "Action buttons",
+            create_button(
+              class = "btn btn-outline-primary btn-sm border-0",
+              `hx-get` = paste0("/edit_todo/", the_id),
+              tags$i(class = "bi bi-pencil")
+            ),
+            create_button(
+              class = "btn btn-outline-danger btn-sm border-0",
+              `hx-delete` = paste0("/delete_todo/", the_id),
+              tags$i(class = "bi bi-trash")
+            )
+          )
         )
       )
     },
