@@ -79,6 +79,26 @@ Todo <- R6Class(
       invisible(self)
     },
 
+    #' Toggle the status of a todo item
+    #'
+    #' @param item_id String. The id of the todo item.
+    #' @return self (invisibly)
+    toggle_status = \(item_id) {
+      item <- todos_conn$find(
+        query = mongo_query(
+          "_id" = list("$oid" = item_id)
+        ),
+        fields = mongo_query(status = TRUE)
+      )
+
+      if (nrow(item) > 0L) {
+        new_status <- !item$status
+        self$update(item_id = item_id, new_status = new_status)
+      }
+
+      invisible(self)
+    },
+
     #' Delete a todo item
     #'
     #' @param item String. The todo item to delete.
