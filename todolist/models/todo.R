@@ -101,12 +101,12 @@ Todo <- R6Class(
 
     #' Delete a todo item
     #'
-    #' @param item String. The todo item to delete.
+    #' @param item_id String. The id of the todo item to delete.
     #' @return self (invisibly)
-    delete = \(item) {
+    delete = \(item_id) {
       todos_conn$remove(
         query = mongo_query(
-          item = item
+          "_id" = list("$oid" = item_id)
         )
       )
 
