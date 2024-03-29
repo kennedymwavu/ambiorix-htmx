@@ -11,6 +11,15 @@ box::use(
 #' @return An object of class `shiny.tag`.
 #' @export
 create_todo_list <- \(items) {
+  if (nrow(items) == 0L) {
+    return(
+      tags$p(
+        class = "text-center card-title",
+        "✨ No todo items yet. Add one! ✨"
+      )
+    )
+  }
+
   list_items <- as.data.table(items)[
     ,
     item := create_list_item(item, `_id`, status)
