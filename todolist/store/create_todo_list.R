@@ -34,7 +34,10 @@ create_list_item <- \(item, id, status) {
   Map(
     f = \(the_item, the_id, the_status) {
       tags$li(
-        class = "list-group-item",
+        class = paste(
+          "list-group-item",
+          if (the_status) "list-group-item-success"
+        ),
         tags$input(
           type = "checkbox",
           class = "form-check-input me-1",
@@ -43,8 +46,7 @@ create_list_item <- \(item, id, status) {
           name = "item_id",
           value = the_id,
           checked = if (the_status) NA else NULL,
-          `hx-post` = "/check_todo",
-          `hx-vals` = sprintf('{"item_id2": "%s"}', the_id)
+          `hx-put` = paste0("/check_todo/", the_id)
         ),
         tags$label(
           class = paste(
