@@ -67,7 +67,8 @@ create_list_item <- \(item, id, status) {
             `aria-label` = "Action buttons",
             create_button(
               class = "btn btn-outline-primary btn-sm border-0",
-              `hx-get` = paste0("/edit_todo/", the_id),
+              `hx-get` = paste0("/edit_todo/form/", the_id),
+              `hx-target` = "closest .list-group-item",
               tags$i(class = "bi bi-pencil")
             ),
             create_button(
