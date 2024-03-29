@@ -18,16 +18,15 @@ box::use(
 page <- \(items) {
   tagList(
     tags$div(
-      class = "container",
+      class = "container small-container",
       create_card(
-        class = "shadow-lg my-3",
+        class = "my-3",
         title = "Get Things Done!",
-        title_icon = tags$i(class = "bi bi-journal-text"),
-        title_class = "text-primary text-center",
+        title_class = "text-center",
         todo_form()
       ),
       create_card(
-        class = "shadow-lg my-3",
+        class = "my-3",
         tags$div(
           id = "todo_items",
           `hx-target` = "this",
@@ -55,7 +54,7 @@ todo_form <- \(item_id = NULL, item_value = "", type = "add") {
     `hx-post` = if (add) "/add_todo" else paste0("/edit_todo/", item_id),
     `hx-on::after-request` = "this.reset()",
     tags$div(
-      class = "input-group mb-3 d-flex",
+      class = "input-group d-flex",
       text_input(
         id = "name",
         class = "flex-grow-1",
