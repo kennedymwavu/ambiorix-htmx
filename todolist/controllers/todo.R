@@ -64,15 +64,16 @@ check_todo <- \(req, res) {
   res$send(html)
 }
 
-#' Handle POST at '/edit_todo'
+#' Handle POST at '/edit_todo/:id'
 #'
 #' @param req The request object.
 #' @param res The response object.
 #' @export
 edit_todo <- \(req, res) {
+  item_id <- req$params$id %||% ""
+
   body <- parse_multipart(req)
-  item_id <- body$item_id %||% ""
-  item_value <- body$item_value %||% ""
+  item_value <- body$name %||% ""
 
   todos <- Todo$new()
 
@@ -82,6 +83,27 @@ edit_todo <- \(req, res) {
   }
 
   html <- create_todo_list(todos$read())
+
+  res$send(html)
+}
+
+#' Handle GET at '/edit_todo/form/:id'
+#'
+#' @param req The request object.
+#' @param res The response object.
+#' @export
+edit_todo_form <- \(req, res) {
+  body <- parse_multipart(req)
+  item_id <- req$params$id %||% ""
+
+  todos <- Todo$new()
+  item_value <- todos$read(id = item_id)$item %||% ""
+
+  html <- todo_form(
+    item_id = item_id,
+    item_value = item_value,
+    type = "edit"
+  )
 
   res$send(html)
 }
