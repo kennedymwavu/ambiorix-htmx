@@ -201,3 +201,20 @@
 }
 
 /* ----END spectral css classes */
+
+body {
+  background-color: #f6f9ff;
+  color: #444444;
+}
+
+.card {
+  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.card-title {
+  color: #012970;
+}
+
+.small-container {
+  max-width: 900px;
+}
