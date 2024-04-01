@@ -1,5 +1,4 @@
 box::use(
-  dplyr,
   rlang[inject],
   htmltools[tags],
   data.table[fread],
@@ -91,14 +90,15 @@ get_uploaded <- \(req, res) {
       as.data.frame() |>
       rowSums(na.rm = TRUE)
     found <- which(found > 0)
-    search_res <- uploaded |> dplyr$slice(found)
+    search_res <- uploaded[found]
   }
 
   records_filtered <- nrow(search_res)
+  end_row <- if (end_row > records_filtered) records_filtered else end_row
 
   # filter out the requested rows:
   row_inds <- seq(from = start_row, to = end_row, by = 1L)
-  filtered <- search_res |> dplyr$slice(row_inds)
+  filtered <- search_res[row_inds]
 
   # datatable expects json:
   response <- list(
