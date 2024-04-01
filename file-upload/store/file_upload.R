@@ -1,6 +1,7 @@
 box::use(
   htmltools[tags],
   . / file_input[file_input],
+  . / create_card[create_card],
   . / create_button[create_button]
 )
 
@@ -10,8 +11,11 @@ box::use(
 page <- \() {
   tags$div(
     class = "container",
-    tags$h1("File Upload"),
-    file_upload_form(),
+    create_card(
+      class = "my-3",
+      title = "File Upload",
+      file_upload_form()
+    ),
     tags$div(id = "content")
   )
 }
