@@ -2,7 +2,8 @@ box::use(
   ambiorix[Ambiorix],
   . / controllers / file_upload[
     home_get,
-    file_upload
+    file_upload,
+    get_uploaded
   ],
   . / middleware / error_middleware[error_handler]
 )
@@ -16,4 +17,5 @@ Ambiorix$
   static("public", "static")$
   get("/", home_get)$
   post("/upload", file_upload)$
-  start()
+  get("/data/:file_name", get_uploaded)$
+  start(open = FALSE)
