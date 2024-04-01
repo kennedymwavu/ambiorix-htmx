@@ -7,7 +7,7 @@ box::use(
   .. / templates / template_path[template_path],
   .. / store / datatable[
     datatable,
-    default_datatable_options
+    datatable_options
   ],
   .. / store / create_card[create_card],
   .. / store / file_upload[file_upload_page = page]
@@ -58,7 +58,7 @@ file_upload <- \(req, res) {
         table_id = "uploaded_data",
         # send a GET request (the default for ajax) to "/data/:file_name"
         ajax = paste0("/data/", file_name),
-        !!!default_datatable_options()
+        !!!datatable_options
       )
     )
   )

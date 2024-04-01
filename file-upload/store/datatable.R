@@ -91,28 +91,27 @@ datatable_script <- \(id, col_names, ...) {
   )
 }
 
-#' Create default datatable options
+#' My custom datatable options
+#' 
+#' A list.
 #'
-#' @return List.
 #' @export
-default_datatable_options <- \() {
-  list(
-    table_class = "table-hover table-bordered table-sm w-100",
-    processing = TRUE,
-    serverSide = TRUE,
-    searchDelay = 1500,
-    # disable sorting of cols:
-    ordering = FALSE,
-    columnDefs = list(
-      list(
-        # handle missing values:
-        defaultContent = "",
-        # avoid cell wrap:
-        className = "dt-nowrap",
-        targets = "_all"
-      )
-    ),
-    # enable horizontal scrolling:
-    scrollX = TRUE
-  )
-}
+datatable_options <- list(
+  table_class = "table-hover table-bordered table-sm w-100",
+  processing = TRUE,
+  serverSide = TRUE,
+  searchDelay = 1500,
+  # disable sorting of cols:
+  ordering = FALSE,
+  columnDefs = list(
+    list(
+      # handle missing values:
+      defaultContent = "",
+      # avoid cell wrap:
+      className = "dt-nowrap",
+      targets = "_all"
+    )
+  ),
+  # enable horizontal scrolling:
+  scrollX = TRUE
+)
