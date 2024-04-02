@@ -5,3 +5,4 @@ This repo showcases practical, end-to-end examples demonstrating how you can use
 Here are the available examples:
 - [Todolist](./todolist/)
 - [Modals](./modals/)
+- [File Uploads](./file-upload/)
