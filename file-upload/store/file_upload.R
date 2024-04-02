@@ -29,7 +29,10 @@ file_upload_form <- \() {
     `hx-post` = "/upload",
     `hx-target` = "#content",
     `hx-swap` = "innerHTML",
-    file_input(id = "file"),
+    file_input(
+      id = "file",
+      label = "Choose csv file & click upload:"
+    ),
     create_button(
       type = "submit",
       class = "btn btn-primary rounded-1",
