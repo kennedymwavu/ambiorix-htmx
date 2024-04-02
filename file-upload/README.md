@@ -23,7 +23,7 @@ filtering, column selection etc.)
 1. Clone this repo and `cd` into the `todolist/` directory.
     ```bash
     git clone git@github.com:kennedymwavu/ambiorix-htmx.git
-    cd ambiorix-htmx/todolist/
+    cd ambiorix-htmx/file-upload/
     ```
 1. Install the dependencies.
     ```bash
