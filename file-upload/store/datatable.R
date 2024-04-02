@@ -75,7 +75,15 @@ datatable <- \(
 #' @return String. JavaScript code.
 #' @export
 datatable_script <- \(id, col_names, ...) {
-  columns <- lapply(col_names, \(name) list(data = name))
+  columns <- lapply(
+    X = col_names,
+    FUN = \(name) {
+      list(
+        data = list(name)
+      )
+    }
+  )
+
   opts <- list(
     ...,
     columns = columns
@@ -92,7 +100,7 @@ datatable_script <- \(id, col_names, ...) {
 }
 
 #' My custom datatable options
-#' 
+#'
 #' A list.
 #'
 #' @export
