@@ -1,0 +1,6 @@
+dev.R
+package-lock.json
+package.json
+nodemon.json
+node_modules/
+.Renviron
