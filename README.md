@@ -6,3 +6,4 @@ Here are the available examples:
 - [Todolist](./todolist/)
 - [Modals](./modals/)
 - [File Uploads](./file-upload/)
+- [Websockets](./websockets/)
