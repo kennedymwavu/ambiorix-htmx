@@ -37,22 +37,23 @@ Persistent storage has been implemented using MongoDB.
     git clone git@github.com:kennedymwavu/ambiorix-htmx.git
     cd ambiorix-htmx/modals
     ```
-1. Install R package dependencies:
-    ```r
-    Rscript install_deps.R
-    ```
 1. Add an env file (`.Renviron`) at the root dir of the project with these variables:
     ```r
     MONGO_DB = ambiorix-htmx
     MODALS_COLLECTION = modals
     HOST = 127.0.0.1
     PORT = 8000
+    RENV_CONFIG_SANDBOX_ENABLED = FALSE
     ```
     You can change the default values if you wish.
+1. Fire up R and install the dependencies:
+    ```r
+    renv::restore()
+    ```
 
 # Start app
 
-`index.R` is the entry point.
+`index.R` is the entry point of the app. Run the following command to start the app.
 
 ```r
 Rscript index.R
