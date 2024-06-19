@@ -29,18 +29,19 @@ A big upgrade from "Hello, World!", tbh.
     git clone git@github.com:kennedymwavu/ambiorix-htmx.git
     cd ambiorix-htmx/todolist/
     ```
-1. Install the dependencies.
-    ```bash
-    Rscript install_deps.R
-    ```
 1. Add an env file (`.Renviron`) at the root dir of the project with the following content.
     ```bash
     MONGO_DB = ambiorix-htmx
     TODO_COLLECTION = todo
     HOST = 127.0.0.1
     PORT = 8000
+    RENV_CONFIG_SANDBOX_ENABLED = FALSE
     ```
     You can change the values of the variables to suit your environment.
+1. Fire up R and install the dependencies.
+    ```r
+    renv::restore()
+    ```
 
 # Start app
 
