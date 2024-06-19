@@ -25,16 +25,17 @@ filtering, column selection etc.)
     git clone git@github.com:kennedymwavu/ambiorix-htmx.git
     cd ambiorix-htmx/file-upload/
     ```
-1. Install the dependencies.
-    ```bash
-    Rscript install_deps.R
-    ```
 1. Add an env file (`.Renviron`) at the root dir of the project with the following content.
     ```r
     HOST = 127.0.0.1
     PORT = 8000
+    RENV_CONFIG_SANDBOX_ENABLED = FALSE
     ```
     You can change the values of the variables to suit your environment.
+1. Install the dependencies.
+    ```r
+    renv::restore()
+    ```
 
 # Start app
 
