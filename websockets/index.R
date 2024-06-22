@@ -12,14 +12,35 @@ box::use(
 
 #' A list of websocket connections.
 #'
-clients <- list()
+ws_clients <- list()
+
+#' Add a new websocket client
+#'
+#' @param ws A websocket connection.
+#' @export
+add_ws_client <- \(ws) {
+  ws_clients <<- append(x = ws_clients, values = ws)
+}
+
+#' Remove a websocket client
+#'
+#' @param ws A websocket connection.
+#' @export
+remove_ws_client <- \(ws) {
+  ws_clients <<- Filter(
+    f = \(client) {
+      !identical(client, ws)
+    },
+    x = ws_clients
+  )
+}
 
 #' Broadcast a message to websocket clients
 #'
 #' @param msg Message to broadcast.
 #' @export
 broadcast_message <- \(msg) {
-  for (client in clients) {
+  for (client in ws_clients) {
     client$send(msg)
   }
 }
@@ -59,7 +80,7 @@ hello_ws <- \(msg) {
 #' @export
 ws_handler <- \(ws) {
   # add new client:
-  clients <<- append(x = clients, values = ws)
+  add_ws_client(ws)
 
   # list websocket endpoints for our app. we'll listen for messages from them:
   ws_endpoints <- c("hello")
@@ -80,6 +101,11 @@ ws_handler <- \(ws) {
       hello = hello_ws(msg),
       NULL
     )
+  })
+
+  # on close, remove the client:
+  ws$onClose(\() {
+    remove_ws_client(ws)
   })
 }
 
