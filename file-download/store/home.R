@@ -2,6 +2,7 @@ box::use(
   htmltools[tags, tagList],
   . / components / card[card],
   . / components / button[button],
+  . / components / spinner[spinner],
   . / components / select_input[select_input],
 )
 
@@ -15,23 +16,22 @@ home_page <- \() {
       title = "Downloading data",
       class = "my-3",
       select_input(
-        id = "selector",
+        id = "dataset_name",
         label = "Pick a dataset:",
         label_class = "fw-bold",
         choices = c("iris", "rock", "pressure", "cars"),
         selected = "rock",
-        hx_post = "/dataset",
-        hx_trigger = "load, change, submit",
-        hx_target = "#dataset",
-        hx_swap = "outerHTML"
-      ),
-      button(
-        id = "download",
-        class = "btn-primary",
-        type = "submit",
-        tags$i(class = "bi bi-download"),
-        "Download"
+        `hx-get` = "/dataset",
+        `hx-trigger` = "load, change, submit",
+        `hx-target` = "#dataset",
+        `hx-swap` = "outerHTML",
+        `hx-indicator` = "#dataset-spinner"
       )
+    ),
+    tags$div(
+      id = "dataset-spinner",
+      class = "htmx-indicator",
+      spinner()
     ),
     tags$div(id = "dataset")
   )
