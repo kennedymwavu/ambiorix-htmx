@@ -4,7 +4,7 @@ box::use(
 
 #' Button
 #'
-#' @param ... Tags to include in [htmltools::tags$button()].
+#' @param ... Tags or attributes to include in [htmltools::tags$button()].
 #' @param id String. Button id.
 #' @param type String. Type of the button. Default is "button".
 #' See [mdn web docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button)
