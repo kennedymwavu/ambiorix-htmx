@@ -22,7 +22,7 @@ home_page <- \() {
         choices = c("iris", "rock", "pressure", "cars"),
         selected = "rock",
         `hx-get` = "/dataset",
-        `hx-trigger` = "load, change, submit",
+        `hx-trigger` = "load, change",
         `hx-target` = "#dataset",
         `hx-swap` = "outerHTML",
         `hx-indicator` = "#dataset-spinner"
