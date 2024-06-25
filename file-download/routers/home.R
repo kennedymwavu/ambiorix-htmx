@@ -1,6 +1,11 @@
 box::use(
   ambiorix[Router],
-  .. / controllers / home[home_get, show_dataset, download_dataset]
+  .. / controllers / home[
+    get_data,
+    home_get,
+    show_dataset,
+    download_dataset,
+  ]
 )
 
 #' Router for "/"
@@ -9,5 +14,6 @@ box::use(
 router <- Router$
   new("/")$
   get("/", home_get)$
+  get("/data/:name", get_data)$
   get("/dataset", show_dataset)$
   get("/download/:name", download_dataset)
