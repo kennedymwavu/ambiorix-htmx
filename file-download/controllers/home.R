@@ -3,6 +3,8 @@ box::use(
   datasets,
   rlang[inject],
   htmltools[tags],
+  # res$csv() requires {readr}. capture it as a dependency in {renv}:
+  readr[format_csv],
   ambiorix[parse_multipart],
   .. / store / home[home_page],
   .. / store / components / card[card],
