@@ -1,6 +1,20 @@
 # File download
 
-A app where the user can view & download the selected dataset.
+A simple app where the user can select, view & download a dataset.
+
+# Exhibits
+
+- rock
+
+![rock dataset](./demos/rock.png)
+
+- iris
+
+![iris dataset](./demos/iris.png)
+
+- pressure
+
+![pressure dataset](./demos/pressure.png)
 
 # Installation
 
@@ -15,7 +29,6 @@ A app where the user can view & download the selected dataset.
     HOST = 127.0.0.1
     PORT = 8000
     RENV_CONFIG_SANDBOX_ENABLED = FALSE
-
    ```
 
    You can change the values of the variables to suit your environment.
