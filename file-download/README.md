@@ -2,6 +2,8 @@
 
 A simple app where the user can select, view & download a dataset.
 
+View [live app here](https://ambiorix-htmx-file-download.mwavu.com/).
+
 # Exhibits
 
 - rock
