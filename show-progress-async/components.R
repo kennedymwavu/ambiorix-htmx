@@ -14,17 +14,23 @@ home_page <- \() {
 
 #' Computation div'
 #'
+#' @param btn_label String. Button label. Defaults to
+#' "Start computation".
 #' @param show_loading_spinner Logical. Should loading spinner
 #' on button be visible? Defaults to `FALSE`.
 #' @param loading_spinner_label String. Loading spinner label.
 #' @param show_progress_bar Logical. Should progress bar be shown?
 #' Defaults to `FALSE`.
+#' @param progress_hx_trigger `hx-trigger` attribute of the
+#' progress div. Defaults to "every 3s".
 #' @param ... Named arguments passed to [progress_bar()].
 #' @export
 computation_div <- \(
+  btn_label = "Start computation",
   show_loading_spinner = FALSE,
   loading_spinner_label = "Just a sec...",
   show_progress_bar = FALSE,
+  progress_hx_trigger = "every 3s",
   ...
 ) {
   spinner <- tagList(
@@ -52,10 +58,15 @@ computation_div <- \(
     `hx-post` = if (!show_loading_spinner) "/compute",
     `hx-target` = "#computation-div",
     `hx-swap` = "outerHTML",
-    if (show_loading_spinner) spinner else "Start computation"
+    if (show_loading_spinner) spinner else btn_label
   )
 
-  pb <- if (show_progress_bar) progress_bar(...)
+  pb <- if (show_progress_bar) {
+    progress_bar(
+      hx_trigger = progress_hx_trigger,
+      ...
+    )
+  }
 
   tags$div(
     id = "computation-div",
@@ -71,15 +82,28 @@ computation_div <- \(
 #' 0 and 100. Default is 0.
 #' @param is_striped Logical. Should the progress bar be striped?
 #' Default is `TRUE`.
+#' @param hx_trigger String. `hx-trigger` attribute of the
+#' progress div. Defaults to "every 3s".
 #' @return [htmltools::tags]
 #' @export
 progress_bar <- \(
   progress_id = NULL,
   progress_value = 0L,
-  is_striped = TRUE
+  is_striped = TRUE,
+  hx_trigger = "every 3s"
 ) {
-  hx_get <- if (!is.null(progress_id)) paste0("/progress/", progress_id)
-  class <- paste("progress-bar", if (is_striped) "progress-bar-striped progress-bar-animated")
+  hx_get <- paste0("/progress/", progress_id)
+  hx_target <- "this"
+
+  if (is.null(progress_id)) {
+    hx_get <- "/computation-div/complete"
+    hx_target <- "#computation-div"
+  }
+
+  class <- "progress-bar"
+  if (is_striped) {
+    class <- paste(class, "progress-bar-striped progress-bar-animated")
+  }
 
   tags$div(
     class = "progress",
@@ -89,8 +113,8 @@ progress_bar <- \(
     `aria-valuemin` = "0",
     `aria-valuemax` = "100",
     `hx-get` = hx_get,
-    `hx-trigger` = "every 3s",
-    `hx-target` = "#computation-div",
+    `hx-trigger` = hx_trigger,
+    `hx-target` = hx_target,
     `hx-swap` = "outerHTML",
     tags$div(
       id = "progress-bar",

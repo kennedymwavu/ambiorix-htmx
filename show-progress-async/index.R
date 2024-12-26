@@ -18,6 +18,7 @@ box::use(
   ],
   . / components[
     home_page,
+    progress_bar,
     computation_div,
   ],
 )
@@ -83,14 +84,36 @@ compute_post <- \(req, res) {
 get_progress <- \(req, res) {
   progress_id <- req$params$id
   record <- read_progress_record(conn = conn, progress_id = progress_id)
-  is_done <- record$progress_value >= 100
+  progress_value <- record$progress_value
+  hx_trigger <- "every 3s"
 
+  is_done <- progress_value >= 100
+  if (is_done) {
+    progress_id <- NULL
+    progress_value <- 100L
+    hx_trigger <- "load"
+  }
+
+  html <- progress_bar(
+    progress_id = progress_id,
+    progress_value = progress_value,
+    is_striped = TRUE,
+    hx_trigger = hx_trigger
+  )
+  res$send(html)
+}
+
+#' Handle GET at '/computation-div/complete'
+#'
+#' @export
+get_computation_complete_div <- \(req, res) {
   html <- computation_div(
-    show_loading_spinner = !is_done,
+    btn_label = "Restart computation",
+    show_loading_spinner = FALSE,
     show_progress_bar = TRUE,
-    progress_id = if (!is_done) progress_id,
-    progress_value = record$progress_value,
-    is_striped = !is_done
+    progress_value = 100L,
+    is_striped = FALSE,
+    progress_hx_trigger = NULL
   )
   res$send(html)
 }
@@ -112,7 +135,8 @@ app <- Ambiorix$
   static("public", "assets")$
   get("/", home_get)$
   post("/compute", compute_post)$
-  get("/progress/:id", get_progress)
+  get("/progress/:id", get_progress)$
+  get("/computation-div/complete", get_computation_complete_div)
 
 app$error <- error_handler
 
