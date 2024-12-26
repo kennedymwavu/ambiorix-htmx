@@ -45,7 +45,6 @@ home_get <- \(req, res) {
 #' @export
 compute_post <- \(req, res) {
   record <- create_progress_record(conn = conn)
-  x <- box::file("test.txt")
 
   future({
     conn <- make_conn()
@@ -93,7 +92,7 @@ get_progress <- \(req, res) {
 
 #' Handler for 500 server errors
 #'
-#' @param error The erro object. See [stop()].
+#' @param error The error object. See [stop()].
 #' @export
 error_handler <- \(req, res, error = NULL) {
   if (!is.null(error)) {
