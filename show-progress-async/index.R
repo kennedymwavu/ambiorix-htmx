@@ -47,6 +47,11 @@ compute_post <- \(req, res) {
   record <- create_progress_record(conn = conn)
 
   future({
+    # NOTE: it's not possible to share database connections btwn
+    # multiple R processes due to a limitation in {DBI}.
+    # reference: https://github.com/rstudio/pool/issues/83#issuecomment-812602134
+    # therefore, we must make a new connection for each
+    # {future} session & close it on exit.
     conn <- make_conn()
     on.exit(dbDisconnect(conn = conn))
 
