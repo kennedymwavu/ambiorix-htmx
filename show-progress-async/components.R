@@ -79,10 +79,9 @@ progress_bar <- \(
   is_striped = TRUE
 ) {
   hx_get <- if (!is.null(progress_id)) paste0("/progress/", progress_id)
-  class <- paste("progress-bar", if (is_striped) "progress-bar-striped")
+  class <- paste("progress-bar", if (is_striped) "progress-bar-striped progress-bar-animated")
 
   tags$div(
-    id = "progress-bar",
     class = "progress",
     role = "progressbar",
     `aria-label` = "Computation progress",
@@ -94,6 +93,7 @@ progress_bar <- \(
     `hx-target` = "#computation-div",
     `hx-swap` = "outerHTML",
     tags$div(
+      id = "progress-bar",
       class = class,
       style = sprintf("width: %s%%", progress_value),
       paste0(progress_value, "%")
